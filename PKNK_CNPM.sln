@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.33214.272
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PKNK_CNPM", "quanlyphongkhamnhakhoa\PKNK_CNPM.csproj", "{8361BD63-2025-4C92-BD85-742965A2193B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{226436D1-C1B0-4571-9F12-E87FD36C87F3}"
+	ProjectSection(SolutionItems) = preProject
+		quanlyphongkhamnhakhoa\bin\Debug\AGI.ico = quanlyphongkhamnhakhoa\bin\Debug\AGI.ico
+	EndProjectSection
+EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "ERP AGI", "ERP AGI\ERP AGI.vdproj", "{36CFC362-C8DD-4E7C-8258-0A2447E4075F}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{8361BD63-2025-4C92-BD85-742965A2193B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8361BD63-2025-4C92-BD85-742965A2193B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8361BD63-2025-4C92-BD85-742965A2193B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8361BD63-2025-4C92-BD85-742965A2193B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{36CFC362-C8DD-4E7C-8258-0A2447E4075F}.Debug|Any CPU.ActiveCfg = Debug
+		{36CFC362-C8DD-4E7C-8258-0A2447E4075F}.Release|Any CPU.ActiveCfg = Release
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {B1734C72-04BC-41CD-A44F-E835484B6467}
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,781 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{8361BD63-2025-4C92-BD85-742965A2193B}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <RootNamespace>PKNK_CNPM</RootNamespace>
+    <AssemblyName>PKNK_CNPM</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <Deterministic>true</Deterministic>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>AGI.ico</ApplicationIcon>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="itextsharp, Version=5.5.13.4, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <HintPath>..\packages\iTextSharp.5.5.13.4\lib\net461\itextsharp.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Bcl.AsyncInterfaces, Version=6.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Bcl.AsyncInterfaces.6.0.0\lib\net461\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.DependencyInjection, Version=6.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Extensions.DependencyInjection.6.0.0\lib\net461\Microsoft.Extensions.DependencyInjection.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.DependencyInjection.Abstractions, Version=6.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Extensions.DependencyInjection.Abstractions.6.0.0\lib\net461\Microsoft.Extensions.DependencyInjection.Abstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.Logging, Version=6.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Extensions.Logging.6.0.0\lib\net461\Microsoft.Extensions.Logging.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.Logging.Abstractions, Version=6.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Extensions.Logging.Abstractions.6.0.0\lib\net461\Microsoft.Extensions.Logging.Abstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.Options, Version=6.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Extensions.Options.6.0.0\lib\net461\Microsoft.Extensions.Options.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.Primitives, Version=6.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Extensions.Primitives.6.0.0\lib\net461\Microsoft.Extensions.Primitives.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Buffers.4.5.1\lib\net461\System.Buffers.dll</HintPath>
+    </Reference>
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Data.OleDb, Version=8.0.0.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Data.OleDb.8.0.1\lib\net462\System.Data.OleDb.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Diagnostics.DiagnosticSource, Version=6.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Diagnostics.DiagnosticSource.6.0.0\lib\net461\System.Diagnostics.DiagnosticSource.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Memory, Version=4.0.1.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Memory.4.5.4\lib\net461\System.Memory.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Numerics" />
+    <Reference Include="System.Numerics.Vectors, Version=4.1.4.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Numerics.Vectors.4.5.0\lib\net46\System.Numerics.Vectors.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.6.0.0\lib\net461\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Threading.Tasks.Extensions, Version=4.2.0.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Threading.Tasks.Extensions.4.5.4\lib\net461\System.Threading.Tasks.Extensions.dll</HintPath>
+    </Reference>
+    <Reference Include="System.ValueTuple, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.ValueTuple.4.5.0\lib\net47\System.ValueTuple.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Windows.Forms.DataVisualization" />
+    <Reference Include="System.Xaml" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
+    <Reference Include="WindowsFormsIntegration" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Forms\frmAppartementVendr.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\frmAppartementVendr.Designer.cs">
+      <DependentUpon>frmAppartementVendr.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\frmAppartementLouer.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\frmAppartementLouer.Designer.cs">
+      <DependentUpon>frmAppartementLouer.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\frmHistoriqueTrimester.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\frmHistoriqueTrimester.Designer.cs">
+      <DependentUpon>frmHistoriqueTrimester.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\frmArrTrimestere.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\frmArrTrimestere.Designer.cs">
+      <DependentUpon>frmArrTrimestere.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\frmReleve.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\frmReleve.Designer.cs">
+      <DependentUpon>frmReleve.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\frmParametresAvancees.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\frmParametresAvancees.Designer.cs">
+      <DependentUpon>frmParametresAvancees.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\frmEtatDetaille.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\frmEtatDetaille.Designer.cs">
+      <DependentUpon>frmEtatDetaille.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\frmModifierListvirement.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\frmModifierListvirement.Designer.cs">
+      <DependentUpon>frmModifierListvirement.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\frmListVirement.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\frmListVirement.Designer.cs">
+      <DependentUpon>frmListVirement.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\frmMiseSoldeCommission.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\frmMiseSoldeCommission.Designer.cs">
+      <DependentUpon>frmMiseSoldeCommission.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\frmListDesVirements.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\frmListDesVirements.Designer.cs">
+      <DependentUpon>frmListDesVirements.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\frmReleveCompte.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\frmReleveCompte.Designer.cs">
+      <DependentUpon>frmReleveCompte.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\frmOrderVirement.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\frmOrderVirement.Designer.cs">
+      <DependentUpon>frmOrderVirement.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\frmMiseAjourPeriode.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\frmMiseAjourPeriode.Designer.cs">
+      <DependentUpon>frmMiseAjourPeriode.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\frmListEtatJournalie.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\frmListEtatJournalie.Designer.cs">
+      <DependentUpon>frmListEtatJournalie.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\frmListeTauxGerance.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\frmListeTauxGerance.Designer.cs">
+      <DependentUpon>frmListeTauxGerance.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\frmVerifierAugmentation.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\frmVerifierAugmentation.Designer.cs">
+      <DependentUpon>frmVerifierAugmentation.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\frmGerance.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\frmGerance.Designer.cs">
+      <DependentUpon>frmGerance.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\frmPart.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\frmPart.Designer.cs">
+      <DependentUpon>frmPart.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\frmFrais.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\frmFrais.Designer.cs">
+      <DependentUpon>frmFrais.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\frmCredit.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\frmCredit.Designer.cs">
+      <DependentUpon>frmCredit.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\frmEncaissement.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\frmEncaissement.Designer.cs">
+      <DependentUpon>frmEncaissement.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\frmKhachHang.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\frmKhachHang.Designer.cs">
+      <DependentUpon>frmKhachHang.cs</DependentUpon>
+    </Compile>
+    <Compile Include="frmHomeScreen.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmHomeScreen.Designer.cs">
+      <DependentUpon>frmHomeScreen.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Themecolor.cs" />
+    <EmbeddedResource Include="Forms\frmAppartementVendr.resx">
+      <DependentUpon>frmAppartementVendr.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\frmAppartementLouer.resx">
+      <DependentUpon>frmAppartementLouer.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\frmHistoriqueTrimester.resx">
+      <DependentUpon>frmHistoriqueTrimester.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\frmArrTrimestere.resx">
+      <DependentUpon>frmArrTrimestere.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\frmReleve.resx">
+      <DependentUpon>frmReleve.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\frmParametresAvancees.resx">
+      <DependentUpon>frmParametresAvancees.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\frmEtatDetaille.resx">
+      <DependentUpon>frmEtatDetaille.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\frmModifierListvirement.resx">
+      <DependentUpon>frmModifierListvirement.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\frmListVirement.resx">
+      <DependentUpon>frmListVirement.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\frmMiseSoldeCommission.resx">
+      <DependentUpon>frmMiseSoldeCommission.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\frmListDesVirements.resx">
+      <DependentUpon>frmListDesVirements.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\frmReleveCompte.resx">
+      <DependentUpon>frmReleveCompte.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\frmOrderVirement.resx">
+      <DependentUpon>frmOrderVirement.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\frmMiseAjourPeriode.resx">
+      <DependentUpon>frmMiseAjourPeriode.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\frmListEtatJournalie.resx">
+      <DependentUpon>frmListEtatJournalie.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\frmListeTauxGerance.resx">
+      <DependentUpon>frmListeTauxGerance.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\frmVerifierAugmentation.resx">
+      <DependentUpon>frmVerifierAugmentation.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\frmGerance.resx">
+      <DependentUpon>frmGerance.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\frmPart.resx">
+      <DependentUpon>frmPart.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\frmFrais.resx">
+      <DependentUpon>frmFrais.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\frmCredit.resx">
+      <DependentUpon>frmCredit.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\frmEncaissement.resx">
+      <DependentUpon>frmEncaissement.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\frmKhachHang.resx">
+      <DependentUpon>frmKhachHang.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmHomeScreen.resx">
+      <DependentUpon>frmHomeScreen.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <SubType>Designer</SubType>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <None Include="packages.config" />
+    <None Include="Properties\DataSources\PKNK.BUS.Report.HoaDonReport.datasource" />
+    <None Include="Properties\DataSources\PKNK.BUS.Report.ThongTinLsReport.datasource" />
+    <None Include="Properties\DataSources\PKNK.BUS.Report.ThongTinThuocReport.datasource" />
+    <None Include="Properties\DataSources\PKNK.BUS.Servive.AuthService.datasource" />
+    <None Include="Properties\DataSources\PKNK.BUS.Servive.ChanDoanService.datasource" />
+    <None Include="Properties\DataSources\PKNK.BUS.Servive.CheckValidService.datasource" />
+    <None Include="Properties\DataSources\PKNK.BUS.Servive.ChucDanhService.datasource" />
+    <None Include="Properties\DataSources\PKNK.BUS.Servive.DonThuocService.datasource" />
+    <None Include="Properties\DataSources\PKNK.BUS.Servive.KhachHangService.datasource" />
+    <None Include="Properties\DataSources\PKNK.BUS.Servive.LoaiThuThuatService.datasource" />
+    <None Include="Properties\DataSources\PKNK.BUS.Servive.NhanVienService.datasource" />
+    <None Include="Properties\DataSources\PKNK.BUS.Servive.ThongTinLsServive.datasource" />
+    <None Include="Properties\DataSources\PKNK.BUS.Servive.ThuocService.datasource" />
+    <None Include="Properties\DataSources\PKNK.BUS.Servive.ThuThuatService.datasource" />
+    <None Include="Properties\DataSources\PKNK.BUS.Servive.TTCanLamSangService.datasource" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Group 2005.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\single-man-circle.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\visible.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\multiplication-math-symbol-circle.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\mail-send-envelope.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\mail-send-envelope %281%29.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\padlock-square-1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\background.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\unsplash_tZCrFpSNiIQ.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Rectangle 2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Rectangle 21.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Rectangle 22.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\padlock-square-11.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\padlock-square-1 %281%29.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\mail-send-envelope %281%291.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\mail-send-envelope %282%29.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\mail-send-envelope %283%29.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\padlock-square-1 %282%29.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\unlock.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\mail %281%29.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\unlock %281%29.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\mail %282%29.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\COMMIT _ Login Page %281%29.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Thumbnail.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Rectangle 1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\COMMIT _ Login Page %281%291.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Rectangle 002.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Desktop - 1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Slide 16_9 - 1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Form.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Rectangle 001 %281%29.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Desktop - 1 %281%29.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\user.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\user %281%29.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\padlock.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\home %281%29.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\home %281%291.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\home.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\home %281%292.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\menu.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\browser.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\settings.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\help-desk.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\house.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\house1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\browser1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\help-desk1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\settings1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\menu1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\house2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\browser2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\user %282%29.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\help-desk2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\about.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\about1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\browser3.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\calendar.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\patient.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\report.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\report1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\user %282%291.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\team-management.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\settings2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include=".NETFramework,Version=v4.7.2">
+      <Visible>False</Visible>
+      <ProductName>Microsoft .NET Framework 4.7.2 %28x86 and x64%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\doctor.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\salary.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\membrane.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\money.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\order-delivery.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\delivery.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\membrane1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\order-delivery1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\delivery1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\medicine.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\customer-service.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\salary1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\salary2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\money1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\business-report.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\business-report1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\statistics.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\info.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\padlock %281%29.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\logout.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\padlock %281%291.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\logout1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\info1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\bill.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\prescription.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\close.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\close %281%29.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\add.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\reload.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\diskette.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\minimize-sign.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\squares.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\close %282%29.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\maximize %281%29.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\minus.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\add1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\reload1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="AGI.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\delete.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\add2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\printing.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\printing1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\delete1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\delete2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\delete3.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\delete4.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\edit.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\printing2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\delete5.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\pros-and-cons.png" />
+    <None Include="Resources\33847914_wwr6.jpg" />
+    <None Include="Resources\backgroundfull.jpg" />
+    <None Include="Resources\background.jpg" />
+    <None Include="Resources\SettingTest.bmp" />
+    <None Include="Resources\setting_5063296.png" />
+    <None Include="Resources\quitter.png" />
+    <None Include="Resources\affaires.png" />
+    <None Include="Resources\gerance.png" />
+    <None Include="Resources\frais.png" />
+    <None Include="Resources\releve.png" />
+    <None Include="Resources\credit.png" />
+    <None Include="Resources\parametrage.png" />
+    <None Include="Resources\encaissment.png" />
+    <None Include="Resources\locataire.png" />
+    <None Include="Resources\gestionlocataire.png" />
+    <None Include="Resources\avendre.png" />
+    <None Include="Resources\alouer.png" />
+    <None Include="Resources\gestion_gerance.png" />
+    <None Include="Resources\gestion_frais.png" />
+    <None Include="Resources\relevecompte.png" />
+    <None Include="Resources\etatdetails.png" />
+    <None Include="Resources\editertablevirement.png" />
+    <None Include="Resources\commission_1924564.png" />
+    <None Include="Resources\miseajourperiod.png" />
+    <None Include="Resources\gestion_credit.png" />
+    <None Include="Resources\nouveau_trimester.png" />
+    <None Include="Resources\modifier_taxt.png" />
+    <None Include="Resources\listeetatjournal.png" />
+    <None Include="Resources\encaissement_gestion.png" />
+    <None Include="Resources\augmentation__.png" />
+    <None Include="Resources\gestion_locataire.png" />
+    <None Include="Resources\tax_ger.png" />
+    <None Include="Resources\listevirement.png" />
+    <None Include="Resources\ordervirement.png" />
+    <None Include="Resources\listetaux.png" />
+    <None Include="bin\Debug\backg.jpg" />
+    <None Include="Resources\Commission_backgroud.jpg" />
+    <None Include="Resources\TVA_backgroud.jpg" />
+    <None Include="Resources\fix-build-and-enhance-your-sql-queries.jpg" />
+    <None Include="Resources\query.jpg" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\Microsoft.Extensions.Logging.Abstractions.6.0.0\build\Microsoft.Extensions.Logging.Abstractions.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.Extensions.Logging.Abstractions.6.0.0\build\Microsoft.Extensions.Logging.Abstractions.targets'))" />
+  </Target>
+  <Import Project="..\packages\Microsoft.Extensions.Logging.Abstractions.6.0.0\build\Microsoft.Extensions.Logging.Abstractions.targets" Condition="Exists('..\packages\Microsoft.Extensions.Logging.Abstractions.6.0.0\build\Microsoft.Extensions.Logging.Abstractions.targets')" />
+</Project>
