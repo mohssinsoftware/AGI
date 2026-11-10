@@ -25,6 +25,7 @@ namespace PKNK_CNPM.Forms
         private DataTable _dataTableValideEncaissement;
         private string QuittancePath = String.Empty;
         private string EtatDetaillePath = String.Empty;
+        private string RelevePath = String.Empty;
 
         public FormEncaissement()
         {
@@ -84,7 +85,7 @@ namespace PKNK_CNPM.Forms
             try
             {
                 // Adjust the SQL query to match the exact table and column names
-                string selectQuery = "SELECT [Valeur], [Id Param] FROM [Params] WHERE [Id Param] in ('Quittance', 'EtatDetaille')";
+                string selectQuery = "SELECT [Valeur], [Id Param] FROM [Params] WHERE [Id Param] in ('Quittance', 'EtatDetaille', 'Releve')";
 
                 // Open the connection
                 if (_connection.State != ConnectionState.Open)
@@ -104,13 +105,18 @@ namespace PKNK_CNPM.Forms
                         {
                             DataRow row = dataTable.Rows[i];
 
-                            if (row["Id Param"].ToString() == "Quittance")
+                            string parameterName = row["Id Param"].ToString();
+                            if (parameterName == "Quittance")
                             {
                                 QuittancePath = row["Valeur"].ToString();
                             }
-                            else
+                            else if (parameterName == "EtatDetaille")
                             {
                                 EtatDetaillePath = row["Valeur"].ToString();
+                            }
+                            else if (parameterName == "Releve")
+                            {
+                                RelevePath = row["Valeur"].ToString();
                             }
                         }
                     }
@@ -118,7 +124,8 @@ namespace PKNK_CNPM.Forms
             }
             catch (Exception ex)
             {
-                
+                MessageBox.Show("Impossible de charger les dossiers de génération : " + ex.Message,
+                    "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             finally
             {
@@ -1225,7 +1232,7 @@ namespace PKNK_CNPM.Forms
             }
             catch (Exception ex)
             {
-                Console.WriteLine("An error occurred: " + ex.Message);
+                throw new InvalidOperationException("La génération du relevé d'encaissement a échoué.", ex);
             }
             finally
             {
@@ -1234,9 +1241,9 @@ namespace PKNK_CNPM.Forms
         }
 
         public void GenerateDateEncaissement_EtatJornalie(string filePath, List<string> ListCodeLocataires, List<string> ListNomLocataires,
-        List<string> ListeQuittance, List<string> ListPerdioPay, List<string> ListCodeGer, List<double> ListMontantPay,
-        List<double> ListMontantImp, double commission, double TVA, double Total, double Sold)
-            {
+            List<string> ListeQuittance, List<string> ListPerdioPay, List<string> ListCodeGer, List<double> ListMontantPay,
+            List<double> ListMontantImp, double commission, double TVA, double Total, double Sold)
+        {
 
             // Define the fonts
             iTextSharp.text.Font headerFont = FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 8);
@@ -1603,13 +1610,13 @@ namespace PKNK_CNPM.Forms
                     SpacingBefore = 0f,
                     IndentationLeft = separationPosition + 10 
                 };
-                
+
                 document.Add(rightSectionContent);
                 */
             }
             catch (Exception ex)
             {
-                Console.WriteLine("An error occurred: " + ex.Message);
+                throw new InvalidOperationException("La génération de la quittance a échoué.", ex);
             }
             finally
             {
@@ -1678,10 +1685,12 @@ namespace PKNK_CNPM.Forms
                         }
                     }
 
+                    string outputPath = GeneratedFile.GetOutputPath(
+                        RelevePath, $"Encaissement_{CodeGerance}_{NomCoprop}.pdf");
                     GeneratePdfEncaissement(
-                        $@"C:\Encaissement_{CodeGerance}_{NomCoprop}.pdf",
-                        @"C:\Users\Pc\Downloads\detail_clinic_winform-main\Logo_AGI_page-0001-removebg-preview.png",
-                         Adresse1,  Adresse2,  Adresse3,CodeGerance, NomCoprop,
+                        outputPath,
+                        GeneratedFile.LogoPath,
+                        CodeGerance, NomCoprop, Adresse1, Adresse2, Adresse3,
                          ListeCopor, PartCopor,
                         ListCodeLocataires,
                         ListNomLocataires,
@@ -1842,6 +1851,12 @@ namespace PKNK_CNPM.Forms
                         selectedRows.Add(((DataRowView)row.DataBoundItem).Row);
                     }
                 }
+                if (selectedRows.Count == 0)
+                {
+                    MessageBox.Show("Veuillez sélectionner au moins un locataire.");
+                    return;
+                }
+
                 int i = 0;
                 foreach (var row in selectedRows)
                 {   
@@ -1856,8 +1871,10 @@ namespace PKNK_CNPM.Forms
                         Usage = "Comercial";
                     }
 
-                    GenerateQuittances(QuittancePath +@"\Quittance_"+ row["Code Locataire"] + "_"+ row["Nom Locataire"] + ".pdf",
-                    @"C:\Users\Pc\Downloads\detail_clinic_winform-main\Logo_AGI_page-0001-removebg-preview.png",
+                    string outputPath = GeneratedFile.GetOutputPath(
+                        QuittancePath, "Quittance_" + row["Code Locataire"] + "_" + row["Nom Locataire"] + ".pdf");
+                    GenerateQuittances(outputPath,
+                    GeneratedFile.LogoPath,
                     i.ToString(), row["Code Locataire"].ToString(), row["Nom Locataire"].ToString(),
                     row["Adresse"].ToString(), Convert.ToDouble(row["Total"].ToString()),
                     Convert.ToDouble(row["Charge"].ToString()), Convert.ToDouble(row["Taxe"].ToString()),
@@ -1868,7 +1885,8 @@ namespace PKNK_CNPM.Forms
             }
             catch (Exception ex)
             {
-                MessageBox.Show("merci de selectionner au mois un locataire ! : Erreur" + ex.Message);
+                MessageBox.Show("La génération des quittances a échoué : " + ex.Message,
+                    "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -1953,8 +1971,9 @@ namespace PKNK_CNPM.Forms
 
         public void GeneratePdfEtatJournalier(DataTable DTLocataire, DateTime Dt_Encaissement)
         {   
-            string filePath = EtatDetaillePath + $@"\EtatDetaille_"+Dt_Encaissement.ToString("yyyy-MM-dd")+".pdf";
-            string imagePath = @"Logo_AGI_page-0001-removebg-preview.png";
+            string filePath = GeneratedFile.GetOutputPath(
+                EtatDetaillePath, "EtatDetaille_" + Dt_Encaissement.ToString("yyyy-MM-dd") + ".pdf");
+            string imagePath = GeneratedFile.LogoPath;
 
 
             var CodeGerData = DTLocataire.AsEnumerable()
@@ -2096,7 +2115,7 @@ namespace PKNK_CNPM.Forms
             }
             catch (Exception ex)
             {
-                Console.WriteLine("An error occurred: " + ex.Message);
+                throw new InvalidOperationException("La génération de l'état détaillé a échoué.", ex);
             }
             finally
             {

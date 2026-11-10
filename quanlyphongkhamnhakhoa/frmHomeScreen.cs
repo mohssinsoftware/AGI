@@ -11,6 +11,10 @@ namespace PKNK_CNPM
 {
     public partial class frmHomeScreen : Form
     {
+        private static readonly Font StandardInputFont = new Font("Segoe UI", 9F, FontStyle.Regular);
+        private static readonly Font StandardButtonFont = new Font("Segoe UI", 9F, FontStyle.Bold);
+        private static readonly Font StandardHeaderFont = new Font("Segoe UI", 9F, FontStyle.Bold);
+
         bool sidebarExpand = true;
         bool customerCollapse = true;
         bool quanlyCollapse = true;
@@ -25,6 +29,7 @@ namespace PKNK_CNPM
         private Button currentButton;
         private Form activeForm;
         private int tempIndex;
+        private int lastContentLayoutSidebarWidth = -1;
         /*public object SiderbarTimer { get; private set; }*/
         //contruction
         
@@ -38,6 +43,13 @@ namespace PKNK_CNPM
             this.Text = string.Empty;
             this.ControlBox = false;
             this.MaximizedBounds = Screen.FromHandle(this.Handle).WorkingArea;
+
+            panelTitleBar.Dock = DockStyle.None;
+            panelDesktoppanel.Anchor = AnchorStyles.Top | AnchorStyles.Left;
+            grpTatCa.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            this.Resize += (sender, e) => LayoutMainContent(true);
+            sidebar.SizeChanged += (sender, e) => LayoutMainContent(false);
+            LayoutMainContent(true);
         }
         //Drag form
         [DllImport("user32.DLL", EntryPoint = "ReleaseCapture")]
@@ -95,6 +107,235 @@ namespace PKNK_CNPM
                     
             }
         }
+        private void StopMenuTimers()
+        {
+            CustomerTimer.Stop();
+            QuanlyTimer.Stop();
+            SettingTimer.Stop();
+            ReleveTimer.Stop();
+            FraisTimer.Stop();
+            CeditTimer.Stop();
+            GeranceTimer.Stop();
+            AppartementTimer.Stop();
+        }
+
+        private void ToggleMenu(Panel container, ref bool isCollapsed, Timer timer)
+        {
+            StopMenuTimers();
+
+            if (container.Height <= container.MinimumSize.Height)
+            {
+                isCollapsed = true;
+            }
+            else if (container.Height >= container.MaximumSize.Height)
+            {
+                isCollapsed = false;
+            }
+            else
+            {
+                isCollapsed = !isCollapsed;
+            }
+
+            timer.Start();
+        }
+
+        private void CollapseOtherMenus(Panel activeMenu)
+        {
+            Panel[] containers =
+            {
+                CustomerContainer, QuanlyContainer, SettingContainer, CreditContainer,
+                ReleveContainer, FraisContainer, GeranceContainer, AppartementContainer
+            };
+
+            foreach (Panel container in containers)
+            {
+                if (container == activeMenu)
+                {
+                    continue;
+                }
+
+                container.Height = Math.Max(container.MinimumSize.Height, container.Height - 20);
+                if (container.Height == container.MinimumSize.Height)
+                {
+                    SetMenuCollapsed(container);
+                }
+            }
+        }
+
+        private void SetMenuCollapsed(Panel container)
+        {
+            if (container == CustomerContainer) customerCollapse = true;
+            else if (container == QuanlyContainer) quanlyCollapse = true;
+            else if (container == SettingContainer) settingCollapse = true;
+            else if (container == CreditContainer) CeditCollapse = true;
+            else if (container == ReleveContainer) ReleveCollapse = true;
+            else if (container == FraisContainer) FraisCollapse = true;
+            else if (container == GeranceContainer) GeranceCollapse = true;
+            else if (container == AppartementContainer) AppartementCollapse = true;
+        }
+
+        private void LayoutMainContent(bool force)
+        {
+            if (panelTitleBar == null || panelDesktoppanel == null || sidebar == null)
+            {
+                return;
+            }
+
+            bool animationFinished = sidebar.Width == sidebar.MinimumSize.Width ||
+                sidebar.Width == sidebar.MaximumSize.Width;
+            if (!force && !animationFinished &&
+                Math.Abs(sidebar.Width - lastContentLayoutSidebarWidth) < 40)
+            {
+                return;
+            }
+
+            lastContentLayoutSidebarWidth = sidebar.Width;
+            int contentLeft = Math.Min(sidebar.Width, ClientSize.Width);
+            int contentWidth = Math.Max(0, ClientSize.Width - contentLeft);
+            int titleBarHeight = panelTitleBar.Height;
+
+            panelTitleBar.SetBounds(contentLeft, 0, contentWidth, titleBarHeight);
+            panelDesktoppanel.SetBounds(
+                contentLeft,
+                titleBarHeight,
+                contentWidth,
+                Math.Max(0, ClientSize.Height - titleBarHeight));
+        }
+
+        private static void ApplyScreenStyle(Control control)
+        {
+            Color accentColor = Color.FromArgb(15, 118, 110);
+            Color accentHoverColor = Color.FromArgb(17, 94, 89);
+            Color textColor = Color.FromArgb(39, 52, 67);
+
+            if (control is Form form)
+            {
+                form.BackColor = Color.FromArgb(245, 248, 250);
+            }
+            else if (control is TabPage tabPage)
+            {
+                tabPage.BackColor = Color.White;
+            }
+
+            if (control is DataGridView grid)
+            {
+                grid.BackgroundColor = Color.White;
+                grid.BorderStyle = BorderStyle.FixedSingle;
+                grid.GridColor = Color.FromArgb(226, 232, 240);
+                grid.CellBorderStyle = DataGridViewCellBorderStyle.SingleHorizontal;
+                grid.RowHeadersVisible = false;
+                grid.EnableHeadersVisualStyles = false;
+                grid.ColumnHeadersDefaultCellStyle.BackColor = accentColor;
+                grid.ColumnHeadersDefaultCellStyle.ForeColor = Color.White;
+                grid.ColumnHeadersDefaultCellStyle.Font = StandardHeaderFont;
+                grid.ColumnHeadersDefaultCellStyle.SelectionBackColor = accentColor;
+                grid.ColumnHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
+                grid.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
+                grid.DefaultCellStyle.BackColor = Color.White;
+                grid.DefaultCellStyle.ForeColor = textColor;
+                grid.DefaultCellStyle.Font = StandardInputFont;
+                grid.DefaultCellStyle.SelectionBackColor = Color.FromArgb(204, 235, 231);
+                grid.DefaultCellStyle.SelectionForeColor = textColor;
+                grid.AlternatingRowsDefaultCellStyle.BackColor = Color.FromArgb(245, 248, 250);
+                grid.RowTemplate.Height = Math.Max(grid.RowTemplate.Height, 28);
+                grid.ColumnHeadersHeight = Math.Max(grid.ColumnHeadersHeight, 36);
+            }
+            else if (control is Button button)
+            {
+                bool isDestructive = button.Name.IndexOf("supprim", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                    button.Text.IndexOf("supprim", StringComparison.OrdinalIgnoreCase) >= 0;
+                bool isSecondary = button.Name.IndexOf("annul", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                    button.Text.IndexOf("annul", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                    button.Name.IndexOf("fermer", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                    button.Text.IndexOf("fermer", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                    button.Name.IndexOf("close", StringComparison.OrdinalIgnoreCase) >= 0;
+                Color buttonColor = isDestructive
+                    ? Color.FromArgb(185, 55, 55)
+                    : isSecondary ? Color.FromArgb(226, 232, 240) : accentColor;
+                Color buttonHoverColor = isDestructive
+                    ? Color.FromArgb(153, 42, 42)
+                    : isSecondary ? Color.FromArgb(203, 213, 225) : accentHoverColor;
+
+                button.FlatStyle = FlatStyle.Flat;
+                button.FlatAppearance.BorderColor = isSecondary
+                    ? Color.FromArgb(203, 213, 225)
+                    : buttonColor;
+                button.FlatAppearance.BorderSize = 1;
+                button.FlatAppearance.MouseOverBackColor = buttonHoverColor;
+                button.FlatAppearance.MouseDownBackColor = isDestructive
+                    ? Color.FromArgb(125, 35, 35)
+                    : isSecondary ? Color.FromArgb(186, 198, 213) : Color.FromArgb(13, 80, 75);
+                button.BackColor = buttonColor;
+                button.ForeColor = isSecondary ? textColor : Color.White;
+                button.Font = StandardButtonFont;
+                button.Cursor = Cursors.Hand;
+                button.UseVisualStyleBackColor = false;
+            }
+            else if (control is TextBox textBox)
+            {
+                textBox.Font = StandardInputFont;
+                textBox.ForeColor = textColor;
+                textBox.BorderStyle = BorderStyle.FixedSingle;
+            }
+            else if (control is ListBox listBox)
+            {
+                listBox.Font = StandardInputFont;
+                listBox.ForeColor = textColor;
+                listBox.BackColor = Color.White;
+                listBox.BorderStyle = BorderStyle.FixedSingle;
+            }
+            else if (control is ComboBox comboBox)
+            {
+                comboBox.Font = StandardInputFont;
+                comboBox.ForeColor = textColor;
+                comboBox.BackColor = Color.White;
+                comboBox.FlatStyle = FlatStyle.Standard;
+                ComboBoxBorderWindow borderWindow = new ComboBoxBorderWindow(comboBox);
+                comboBox.Disposed += (sender, e) => borderWindow.Dispose();
+            }
+            else if (control is DateTimePicker dateTimePicker)
+            {
+                dateTimePicker.Font = StandardInputFont;
+                dateTimePicker.CalendarTitleBackColor = accentColor;
+            }
+            else if (control is TabControl tabControl)
+            {
+                tabControl.Font = StandardHeaderFont;
+            }
+            else if (control is GroupBox groupBox)
+            {
+                groupBox.ForeColor = accentColor;
+                groupBox.Font = StandardHeaderFont;
+            }
+            else if (control is Label label)
+            {
+                label.ForeColor = textColor;
+                if (label.Font.Size >= 14F)
+                {
+                    label.ForeColor = accentColor;
+                }
+                else
+                {
+                    label.Font = StandardInputFont;
+                }
+            }
+            else if (control is CheckBox checkBox)
+            {
+                checkBox.ForeColor = textColor;
+                checkBox.Font = StandardInputFont;
+            }
+            else if (control is RadioButton radioButton)
+            {
+                radioButton.ForeColor = textColor;
+                radioButton.Font = StandardInputFont;
+            }
+
+            foreach (Control child in control.Controls)
+            {
+                ApplyScreenStyle(child);
+            }
+        }
+
         //Show Forms
         private void OpenChildForm<TForm>(Func<TForm> createChildForm, object btnSender) where TForm : Form
         {
@@ -116,6 +357,7 @@ namespace PKNK_CNPM
                 // Reset();
                 //ActivateButton(btnSender);
                 activeForm = childForm;
+                ApplyScreenStyle(childForm);
                 childForm.TopLevel = false;
                 childForm.FormBorderStyle = FormBorderStyle.None;
                 childForm.Dock = DockStyle.Fill;
@@ -190,22 +432,25 @@ namespace PKNK_CNPM
             if (sidebarExpand)
             {
                 //if siderbar is Expand, maximine
-                sidebar.Width -= 10;
-                if (sidebar.Width == sidebar.MinimumSize.Width)
+                sidebar.Width = Math.Max(sidebar.MinimumSize.Width, sidebar.Width - 20);
+                if (sidebar.Width <= sidebar.MinimumSize.Width)
                 {
+                    sidebar.Width = sidebar.MinimumSize.Width;
                     sidebarExpand = false;
                     sidebarTimer.Stop();
-
+                    LayoutMainContent(true);
                 }
             }
             else
             {
                 //if siderbar is Expand, minimine
-                sidebar.Width += 10;
-                if (sidebar.Width == sidebar.MaximumSize.Width)
+                sidebar.Width = Math.Min(sidebar.MaximumSize.Width, sidebar.Width + 20);
+                if (sidebar.Width >= sidebar.MaximumSize.Width)
                 {
+                    sidebar.Width = sidebar.MaximumSize.Width;
                     sidebarExpand = true;
                     sidebarTimer.Stop();
+                    LayoutMainContent(true);
                 }
             }
         }
@@ -220,7 +465,7 @@ namespace PKNK_CNPM
         //Set Timer các chức năng trong toolBar
         private void btnCustomer_Click_1(object sender, EventArgs e)
         {
-             CustomerTimer.Start();
+            ToggleMenu(CustomerContainer, ref customerCollapse, CustomerTimer);
         }
 
         private void CustomerTimer_Tick_1(object sender, EventArgs e)
@@ -236,13 +481,7 @@ namespace PKNK_CNPM
                         customerCollapse = false;
                         CustomerTimer.Stop();
                     }
-                    QuanlyContainer.Height -= 20;
-                    SettingContainer.Height -= 20;
-                    CreditContainer.Height -= 20;
-                    ReleveContainer.Height -= 20;
-                    FraisContainer.Height -= 20;
-                    GeranceContainer.Height -= 20;
-                    AppartementContainer.Height -= 20;
+                    CollapseOtherMenus(CustomerContainer);
 
                 }
                 else
@@ -273,13 +512,7 @@ namespace PKNK_CNPM
                         quanlyCollapse = false;
                         QuanlyTimer.Stop();
                     }
-                    CustomerContainer.Height -= 20;
-                    SettingContainer.Height -= 20;
-                    CreditContainer.Height -= 20;
-                    ReleveContainer.Height -= 20;
-                    FraisContainer.Height -= 20;
-                    GeranceContainer.Height -= 20;
-                    AppartementContainer.Height -= 20;
+                    CollapseOtherMenus(QuanlyContainer);
                 }
                 else
                 { 
@@ -299,8 +532,8 @@ namespace PKNK_CNPM
             }
         }
         private void btnQuanLy_Click_1(object sender, EventArgs e)
-        {   
-            QuanlyTimer.Start();
+        {
+            ToggleMenu(QuanlyContainer, ref quanlyCollapse, QuanlyTimer);
         }
         
         private void SettingTimer_Tick_1(object sender, EventArgs e)
@@ -316,13 +549,7 @@ namespace PKNK_CNPM
                         settingCollapse = false;
                         SettingTimer.Stop();
                     }
-                    CustomerContainer.Height -= 20;
-                    QuanlyContainer.Height -= 20;
-                    CreditContainer.Height -= 20;
-                    ReleveContainer.Height -= 20;
-                    FraisContainer.Height -= 20;
-                    GeranceContainer.Height -= 20;
-                    AppartementContainer.Height -= 20;
+                    CollapseOtherMenus(SettingContainer);
                 }
                 else
                 {
@@ -355,13 +582,7 @@ namespace PKNK_CNPM
                         ReleveCollapse = false;
                         ReleveTimer.Stop();
                     }
-                    CustomerContainer.Height -= 20;
-                    QuanlyContainer.Height -= 20;
-                    SettingContainer.Height -= 20;
-                    CreditContainer.Height -= 20;
-                    FraisContainer.Height -= 20;
-                    GeranceContainer.Height -= 20;
-                    AppartementContainer.Height -= 20;
+                    CollapseOtherMenus(ReleveContainer);
                 }
                 else
                 {
@@ -393,13 +614,7 @@ namespace PKNK_CNPM
                         FraisCollapse = false;
                         FraisTimer.Stop();
                     }
-                    CustomerContainer.Height -= 20;
-                    QuanlyContainer.Height -= 20;
-                    SettingContainer.Height -= 20;
-                    CreditContainer.Height -= 20;
-                    ReleveContainer.Height -= 20;
-                    GeranceContainer.Height -= 20;
-                    AppartementContainer.Height -= 20;
+                    CollapseOtherMenus(FraisContainer);
                 }
                 else
                 {
@@ -432,13 +647,7 @@ namespace PKNK_CNPM
                         AppartementCollapse = false;
                         AppartementTimer.Stop();
                     }
-                    CustomerContainer.Height -= 20;
-                    QuanlyContainer.Height -= 20;
-                    SettingContainer.Height -= 20;
-                    CreditContainer.Height -= 20;
-                    ReleveContainer.Height -= 20;
-                    FraisContainer.Height -= 20;
-                    GeranceContainer.Height -= 20;
+                    CollapseOtherMenus(AppartementContainer);
                 }
                 else
                 {
@@ -470,13 +679,7 @@ namespace PKNK_CNPM
                         GeranceCollapse = false;
                         GeranceTimer.Stop();
                     }
-                    CustomerContainer.Height -= 20;
-                    QuanlyContainer.Height -= 20;
-                    SettingContainer.Height -= 20;
-                    CreditContainer.Height -= 20;
-                    ReleveContainer.Height -= 20;
-                    FraisContainer.Height -= 20;
-                    AppartementContainer.Height -= 20;
+                    CollapseOtherMenus(GeranceContainer);
                 }
                 else
                 {
@@ -507,13 +710,7 @@ namespace PKNK_CNPM
                         CeditCollapse = false;
                         CeditTimer.Stop();
                     }
-                    CustomerContainer.Height -= 20;
-                    QuanlyContainer.Height -= 20;
-                    SettingContainer.Height -= 20;
-                    ReleveContainer.Height -= 20;
-                    FraisContainer.Height -= 20;
-                    GeranceContainer.Height -= 20;
-                    AppartementContainer.Height -= 20;
+                    CollapseOtherMenus(CreditContainer);
                 }
                 else
                 {
@@ -535,33 +732,31 @@ namespace PKNK_CNPM
 
         private void btnSetting_Click_1(object sender, EventArgs e)
         {
-           /* OpenChildForm(new PKNK_CNPM.Forms.FormSetting(), sender);*/
-            //set timer interval to lowest to make it smoother 
-            SettingTimer.Start();
+            ToggleMenu(SettingContainer, ref settingCollapse, SettingTimer);
         }
 
         private void btnReleve_Click(object sender, EventArgs e)
         {
-            ReleveTimer.Start();
+            ToggleMenu(ReleveContainer, ref ReleveCollapse, ReleveTimer);
         }
 
         private void btnFrais_Click(object sender, EventArgs e)
         {
-            FraisTimer.Start();
+            ToggleMenu(FraisContainer, ref FraisCollapse, FraisTimer);
         }
 
         private void btnGerance_Click(object sender, EventArgs e)
         {
-            GeranceTimer.Start();
+            ToggleMenu(GeranceContainer, ref GeranceCollapse, GeranceTimer);
         }
         private void btnAppartement_Click(object sender, EventArgs e)
         {
-            AppartementTimer.Start();
+            ToggleMenu(AppartementContainer, ref AppartementCollapse, AppartementTimer);
         }
 
         private void btnCredit_Click(object sender, EventArgs e)
         {
-            CeditTimer.Start();
+            ToggleMenu(CreditContainer, ref CeditCollapse, CeditTimer);
         }
 
         private void btnSaisirEncaissement_Click(object sender, EventArgs e)
@@ -746,6 +941,65 @@ namespace PKNK_CNPM
             if (result == DialogResult.Yes)
             {
                 this.Close();
+            }
+        }
+
+        private sealed class ComboBoxBorderWindow : NativeWindow, IDisposable
+        {
+            private const int WmPaint = 0x000F;
+            private readonly ComboBox _comboBox;
+
+            public ComboBoxBorderWindow(ComboBox comboBox)
+            {
+                _comboBox = comboBox;
+                _comboBox.HandleCreated += ComboBox_HandleCreated;
+                _comboBox.HandleDestroyed += ComboBox_HandleDestroyed;
+                if (_comboBox.IsHandleCreated)
+                {
+                    AssignHandle(_comboBox.Handle);
+                }
+            }
+
+            protected override void WndProc(ref Message message)
+            {
+                base.WndProc(ref message);
+
+                if (message.Msg == WmPaint && !_comboBox.IsDisposed)
+                {
+                    int width = _comboBox.ClientSize.Width;
+                    int height = _comboBox.ClientSize.Height;
+                    if (width > 1 && height > 1)
+                    {
+                        using (Graphics graphics = Graphics.FromHwnd(message.HWnd))
+                        using (Pen borderPen = new Pen(Color.Black))
+                        {
+                            graphics.DrawRectangle(borderPen, 0, 0, width - 1, height - 1);
+                        }
+                    }
+                }
+            }
+
+            public void Dispose()
+            {
+                _comboBox.HandleCreated -= ComboBox_HandleCreated;
+                _comboBox.HandleDestroyed -= ComboBox_HandleDestroyed;
+                if (Handle != IntPtr.Zero)
+                {
+                    ReleaseHandle();
+                }
+            }
+
+            private void ComboBox_HandleCreated(object sender, EventArgs e)
+            {
+                AssignHandle(_comboBox.Handle);
+            }
+
+            private void ComboBox_HandleDestroyed(object sender, EventArgs e)
+            {
+                if (Handle != IntPtr.Zero)
+                {
+                    ReleaseHandle();
+                }
             }
         }
     }

@@ -473,9 +473,9 @@ namespace PKNK_CNPM.Forms
         }
 
         public void GenerateDateEncaissement_EtatJornalie(string filePath, List<string> ListCodeLocataires, List<string> ListNomLocataires,
-        List<string> ListeQuittance, List<string> ListPerdioPay, List<string> ListCodeGer, List<double> ListMontantPay,
-        List<double> ListMontantImp, double commission, double TVA, double Total, double Sold)
-            {
+            List<string> ListeQuittance, List<string> ListPerdioPay, List<string> ListCodeGer, List<double> ListMontantPay,
+            List<double> ListMontantImp, double commission, double TVA, double Total, double Sold)
+        {
 
             // Define the fonts
             iTextSharp.text.Font headerFont = FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 8);
@@ -1162,10 +1162,11 @@ namespace PKNK_CNPM.Forms
                 dataTable_Details.Columns.Add("Total", typeof(double));
                 dataTable_Details.Columns.Add("Sold", typeof(double));
 
-                string PathComplet = RelevePath + $@"\Encaissement_{CodeGerance}_{NomCoprop}.pdf";
+                string PathComplet = GeneratedFile.GetOutputPath(
+                    RelevePath, $"Encaissement_{CodeGerance}_{NomCoprop}.pdf");
 
                 dataTable_Details.Rows.Add(PathComplet,
-                @"Logo_AGI_page-0001-removebg-preview.png",Adresse1, Adresse2, Adresse3, CodeGerance, NomCoprop,
+                GeneratedFile.LogoPath, CodeGerance, NomCoprop, Adresse1, Adresse2, Adresse3,
                 commission,TVA,Total,Sold);
 
                 GeneratePdfEncaissement(dataTable_Details, DTLocataire, DTCop);

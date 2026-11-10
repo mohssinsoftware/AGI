@@ -567,15 +567,40 @@ namespace PKNK_CNPM.Forms
 
         private void btnGenerateOrderVirement_Click(object sender, EventArgs e)
         {
-            GeneratePdfTable(@"C:\fileOrderVirement.pdf");
+            using (SaveFileDialog dialog = new SaveFileDialog())
+            {
+                dialog.Filter = "Fichiers PDF (*.pdf)|*.pdf";
+                dialog.DefaultExt = "pdf";
+                dialog.AddExtension = true;
+                dialog.FileName = $"Ordre_Virement_{DateTime.Today:yyyyMMdd}.pdf";
+
+                if (dialog.ShowDialog() != DialogResult.OK)
+                {
+                    return;
+                }
+
+                try
+                {
+                    GeneratePdfTable(dialog.FileName);
+                    MessageBox.Show("Le fichier PDF a été créé : " + dialog.FileName,
+                        "Génération terminée", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("La génération du PDF a échoué : " + ex.Message,
+                        "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
         }
+
         public void GeneratePdfTable(string filePath)
         {
             Document document = new Document(PageSize.A4);
+            PdfWriter writer = null;
 
             try
             {
-                PdfWriter.GetInstance(document, new FileStream(filePath, FileMode.Create));
+                writer = PdfWriter.GetInstance(document, new FileStream(filePath, FileMode.Create));
                 document.Open();
 
                 // Define custom font
@@ -600,16 +625,22 @@ namespace PKNK_CNPM.Forms
                 document.Add(new Paragraph("Casablanca\nLe Gerant de l'A.G.I.\nAGENCE DE GESTION IMMOBILIERE - SARL", titleFont));
                 document.Add(new Paragraph("*5 Mars 2023*\n", normalFont));
 
-                Console.WriteLine("fichier d'Order de virement généré avec succès dans le Path : " + filePath);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Error: " + ex.Message);
-            }
-            finally
-            {
-                document.Close();
-            }
+                }
+                catch (Exception ex)
+                {
+                    throw new InvalidOperationException("La génération du PDF de virement a échoué.", ex);
+                }
+                finally
+                {
+                    if (document.IsOpen())
+                    {
+                        document.Close();
+                    }
+                    if (writer != null)
+                    {
+                        writer.Close();
+                    }
+                }
         }
 
     }

@@ -108,45 +108,29 @@ namespace PKNK_CNPM.Forms
         }
 
         private void RunQuery_Click(object sender, EventArgs e)
-        {   
-            string sourcePath = Path.GetFullPath(@"AGI_DB.mdb"); // Convert to absolute path
-            string directoryPath = Path.GetFullPath(@"Trimestere"); // Convert to absolute path
-            string destinationPath = Path.Combine(directoryPath, $"AGI_DB_{DateTime.Today:yyyyMMdd}.mdb");
+        {
+            try
+            {
+                string sourcePath = Path.GetFullPath(AGI_DB.PathDataBase.Trim());
+                string directoryPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Trimestere");
+                string backupName = $"AGI_DB_{DateTime.Today:yyyyMMdd}.mdb";
+                string destinationPath = Path.Combine(directoryPath, backupName);
 
-            try 
-            {   
-                Console.WriteLine($"Starting the duplication process...");
-
-                Console.WriteLine($"Source Path: {sourcePath}");
-                Console.WriteLine($"Destination Path: {destinationPath}");
-
-                if (!Directory.Exists(directoryPath))
+                if (!File.Exists(sourcePath))
                 {
-                    Console.WriteLine("Destination directory does not exist. Creating it...");
-                    Directory.CreateDirectory(directoryPath);
+                    throw new FileNotFoundException("La base de données à sauvegarder est introuvable.", sourcePath);
                 }
 
-                if (File.Exists(sourcePath))
-                {
-                    Console.WriteLine("Source database found. Proceeding to copy...");
-                    File.Copy(sourcePath, destinationPath, overwrite: true);
-                    Console.WriteLine("Database duplicated successfully!");
-                    InsertIntoHistorique($"AGI_DB_{DateTime.Today:yyyyMMdd}", DateTime.Today);
-                }
-                else
-                {
-                    Console.WriteLine("Source database file does not exist. Please check the source path.");
-                }
+                Directory.CreateDirectory(directoryPath);
+                File.Copy(sourcePath, destinationPath, overwrite: true);
+                InsertIntoHistorique(Path.GetFileNameWithoutExtension(backupName), DateTime.Today);
+                MessageBox.Show("La sauvegarde trimestrielle a été créée : " + destinationPath,
+                    "Sauvegarde terminée", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             catch (Exception ex)
             {
-                Console.WriteLine("An error occurred while duplicating the database:");
-                Console.WriteLine(ex.Message);
-            }
-            finally
-            {
-                Console.WriteLine("Process completed. Press Enter to exit.");
-                Console.ReadLine();
+                MessageBox.Show("La génération de la sauvegarde trimestrielle a échoué : " + ex.Message,
+                    "Erreur de sauvegarde", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -161,25 +145,22 @@ namespace PKNK_CNPM.Forms
                 {
                     cmd.Parameters.AddWithValue("@Intitule", Intitule);
                     cmd.Parameters.AddWithValue("@date", date);
-                    //Add more parameters as needed
 
                     if (_connection.State != ConnectionState.Open)
                     {
-                        _connection.Open(); // Open the connection
+                        _connection.Open();
                     }
                     cmd.ExecuteNonQuery();
                     UpdateMoiPayLoc();
                     TruncateTables();
-                    MessageBox.Show("La nouvelle Trimestre Bien Ajouté dans l'historique de Trimester");
                 }
-            }
-            catch (Exception ex)
-            {
-                
             }
             finally
             {
-                _connection.Close();
+                if (_connection.State == ConnectionState.Open)
+                {
+                    _connection.Close();
+                }
             }
         }
 
@@ -187,7 +168,6 @@ namespace PKNK_CNPM.Forms
         {
             try
             {
-
                 string updateQuery = "UPDATE loc SET [py] = 0 ";
 
                 using (OleDbCommand cmd = new OleDbCommand(updateQuery, _connection))
@@ -200,13 +180,12 @@ namespace PKNK_CNPM.Forms
                     cmd.ExecuteNonQuery();
                 }
             }
-            catch (Exception ex)
-            {
-               
-            }
             finally
             {
-                _connection.Close();
+                if (_connection.State == ConnectionState.Open)
+                {
+                    _connection.Close();
+                }
             }
         }
 
@@ -214,25 +193,18 @@ namespace PKNK_CNPM.Forms
         {
             string[] tableNames = { "Encaissement", "loc_encs" };
 
-            try
+            foreach (string tableName in tableNames)
             {
-                using (OleDbConnection connection = new OleDbConnection("Provider=Microsoft.Jet.OLEDB.4.0;Data Source=AGI_DB.mdb"))
+                string deleteQuery = $"DELETE FROM [{tableName}]";
+                using (OleDbCommand command = new OleDbCommand(deleteQuery, _connection))
                 {
-                    connection.Open();
-                    foreach (var tableName in tableNames)
+                    if (_connection.State != ConnectionState.Open)
                     {
-                        string alterTableQuery = $"DELETE FROM [{tableName}]";
-
-                        using (OleDbCommand command = new OleDbCommand(alterTableQuery, connection))
-                        {
-                            command.ExecuteNonQuery();
-                        }
+                        _connection.Open();
                     }
+
+                    command.ExecuteNonQuery();
                 }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"An error : {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
 
         }

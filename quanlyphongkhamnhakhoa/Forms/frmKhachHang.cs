@@ -1001,13 +1001,12 @@ namespace PKNK_CNPM.Forms
 
         private void ConvertDataViewToPDF(DataView dataView, string filePath, string imagePath)
         {
-            // Create a document
             Document document = new Document(PageSize.A4, 30, 30, 10, 10);
-            PdfWriter writer = PdfWriter.GetInstance(document, new FileStream(filePath, FileMode.Create));
-            document.Open();
-
+            PdfWriter writer = null;
             try
             {
+                writer = PdfWriter.GetInstance(document, new FileStream(filePath, FileMode.Create));
+                document.Open();
                 iTextSharp.text.Font headerFont = FontFactory.GetFont(FontFactory.COURIER_BOLD, 8);
                 iTextSharp.text.Font regularFont = FontFactory.GetFont(FontFactory.COURIER, 8);
 
@@ -1053,22 +1052,39 @@ namespace PKNK_CNPM.Forms
                 }
 
                 document.Add(pdfTable);
-                document.Close();
-                writer.Close();
             }
             catch (Exception ex)
             {
-
+                throw new InvalidOperationException("La génération du PDF des retards a échoué.", ex);
+            }
+            finally
+            {
+                if (document.IsOpen())
+                {
+                    document.Close();
+                }
+                if (writer != null)
+                {
+                    writer.Close();
+                }
             }
         }
 
         private void button4_Click(object sender, EventArgs e)
         {
-            string PathComplet = PathListeRetard + $"/Liste_Retards_{DateTime.Today.ToString("yyyyMMdd")}.pdf";
+            try
+            {
+                string PathComplet = GeneratedFile.GetOutputPath(
+                    PathListeRetard, $"Liste_Retards_{DateTime.Today:yyyyMMdd}.pdf");
 
-            ConvertDataViewToPDF(_dataTableRetard.DefaultView , PathComplet, "Logo_AGI_page-0001-removebg-preview.png");
-
-            ShowFile(PathComplet);
+                ConvertDataViewToPDF(_dataTableRetard.DefaultView, PathComplet, GeneratedFile.LogoPath);
+                ShowFile(PathComplet);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("La génération du PDF des retards a échoué : " + ex.Message,
+                    "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         private void ShowFile(string pdfPath)
@@ -1173,14 +1189,16 @@ namespace PKNK_CNPM.Forms
                     DataView dataView = new DataView(dataTable);
                     DataRowView selectedRow = dataView[0];
 
-                    string outputPath = PathRetardLocataire+$"/Locataire_{NomLoc}_Retards{DateTime.Today.ToString("yyyyMMdd")}.pdf";
-                    ConvertRowToPDF(selectedRow, outputPath, "Logo_AGI_page-0001-removebg-preview.png");
+                    string outputPath = GeneratedFile.GetOutputPath(
+                        PathRetardLocataire, $"Locataire_{NomLoc}_Retards{DateTime.Today:yyyyMMdd}.pdf");
+                    ConvertRowToPDF(selectedRow, outputPath, GeneratedFile.LogoPath);
 
                     ShowFile(outputPath);
                 }
                 catch (Exception ex)
                 {
-                    //MessageBox.Show();
+                    MessageBox.Show("La génération du PDF du locataire a échoué : " + ex.Message,
+                        "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
                 finally
                 {
@@ -1198,13 +1216,12 @@ namespace PKNK_CNPM.Forms
 
         private void ConvertRowToPDF(DataRowView row, string filePath, string imagePath)
         {
-            // Create a document
             Document document = new Document(PageSize.A4, 30, 30, 10, 10);
-            PdfWriter writer = PdfWriter.GetInstance(document, new FileStream(filePath, FileMode.Create));
-            document.Open();
-
+            PdfWriter writer = null;
             try
             {
+                writer = PdfWriter.GetInstance(document, new FileStream(filePath, FileMode.Create));
+                document.Open();
                 iTextSharp.text.Font headerFont = FontFactory.GetFont(FontFactory.COURIER_BOLD, 8);
                 iTextSharp.text.Font regularFont = FontFactory.GetFont(FontFactory.COURIER, 8);
 
@@ -1246,12 +1263,21 @@ namespace PKNK_CNPM.Forms
                 }
 
                 document.Add(pdfTable);
-                document.Close();
-                writer.Close();
             }
             catch (Exception ex)
             {
-
+                throw new InvalidOperationException("La génération du PDF du locataire a échoué.", ex);
+            }
+            finally
+            {
+                if (document.IsOpen())
+                {
+                    document.Close();
+                }
+                if (writer != null)
+                {
+                    writer.Close();
+                }
             }
         }
 

@@ -30,14 +30,7 @@ namespace PKNK_CNPM.Forms
             LoadVille();
             LoadArrondissement();
             LoadQuarttier();
-
-            LoadEtats();
-            LoadTypeSol();
-            LoadSalleDeBains();
-            LoadChambres();
-            LoadCarateristiques();
-            LoadInterieur();
-            LoadOptionSupp();
+            LoadDetailsLocale();
             FnGetAffairesPhotosPath();
         }
 
@@ -96,6 +89,66 @@ namespace PKNK_CNPM.Forms
             finally
             {
                 _connection.Close();
+            }
+        }
+
+        private void LoadDetailsLocale()
+        {
+            try
+            {
+                const string query = "SELECT [Table], [Details] FROM [DetailsLocale] " +
+                    "WHERE [Table] IN ('Etat', 'TypeSol', 'SalleBains', 'Chambres', 'Caracteriqtiques', 'Interieur', 'OptionSupp')";
+
+                if (_connection.State != ConnectionState.Open)
+                {
+                    _connection.Open();
+                }
+
+                DataTable details = new DataTable();
+                using (OleDbDataAdapter adapter = new OleDbDataAdapter(query, _connection))
+                {
+                    adapter.Fill(details);
+                }
+
+                BindDetailsLocale(details, "Etat", ListEtatLocale, MAJListeEtat);
+                BindDetailsLocale(details, "TypeSol", ListTypeSol, MAJListeTypeSol);
+                BindDetailsLocale(details, "SalleBains", ListSalleBains, MAJListeSalleBains);
+                BindDetailsLocale(details, "Chambres", ListChambres, MAJListeChambres);
+                BindDetailsLocale(details, "Caracteriqtiques", ListCaracteristiques, MAJListeCaracteriqtiques);
+                BindDetailsLocale(details, "Interieur", ListInterieur, MAJListeInterieur);
+                BindDetailsLocale(details, "OptionSupp", ListOptionSupp, MAJListeOptionSupp);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error loading Locale details: " + ex.Message);
+            }
+            finally
+            {
+                if (_connection.State == ConnectionState.Open)
+                {
+                    _connection.Close();
+                }
+            }
+        }
+
+        private static void BindDetailsLocale(DataTable details, string category, params ComboBox[] comboBoxes)
+        {
+            DataTable lookup = details.Clone();
+            foreach (DataRow row in details.Select("[Table] = '" + category.Replace("'", "''") + "'"))
+            {
+                lookup.ImportRow(row);
+            }
+
+            lookup.Columns.Remove("Table");
+            DataRow emptyRow = lookup.NewRow();
+            emptyRow["Details"] = string.Empty;
+            lookup.Rows.InsertAt(emptyRow, 0);
+
+            foreach (ComboBox comboBox in comboBoxes)
+            {
+                comboBox.DisplayMember = "Details";
+                comboBox.ValueMember = "Details";
+                comboBox.DataSource = lookup;
             }
         }
 

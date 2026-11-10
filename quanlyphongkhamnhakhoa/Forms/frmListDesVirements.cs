@@ -782,7 +782,8 @@ namespace PKNK_CNPM.Forms
                         string MontantString = NumberToWords(integerPart);
                         string MontantCentim = NumberToWords(decimalPart);
 
-                        string PathComplet = VirementPath + @"\OrderVirement_" + Codeger + "_" + NomCopor + ".pdf";
+                        string PathComplet = GeneratedFile.GetOutputPath(
+                            VirementPath, $"OrderVirement_{Codeger}_{NomCopor}.pdf");
 
                         string IdVirement = getMaxId();
 
