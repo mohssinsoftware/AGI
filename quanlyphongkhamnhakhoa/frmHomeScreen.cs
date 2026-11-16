@@ -4,6 +4,7 @@ using System;
 using System.Data;
 using System.Data.OleDb;
 using System.Drawing;
+using System.Globalization;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
@@ -32,6 +33,14 @@ namespace PKNK_CNPM
         {
             this.WindowState = FormWindowState.Maximized;
             InitializeComponent();
+            sidebar.AutoScroll = true;
+            AddNewScreensToSettingsMenu();
+            string displaySettingsError;
+            if (!DisplayPreferences.Load(out displaySettingsError))
+            {
+                MessageBox.Show("Impossible de lire les préférences d'affichage : " + displaySettingsError,
+                    "Préférences d'affichage", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
             this.Icon = new Icon("AGI.ico");
             random = new Random();
             btnCloseChildForm.Visible = false;
@@ -39,6 +48,50 @@ namespace PKNK_CNPM
             this.ControlBox = false;
             this.MaximizedBounds = Screen.FromHandle(this.Handle).WorkingArea;
         }
+        private void AddNewScreensToSettingsMenu()
+        {
+            const int menuItemHeight = 44;
+            int firstMenuItemTop = panel50.Bottom + btnNouveauTrimester.Bottom - panel50.Height;
+            int requiredHeight = firstMenuItemTop + 10 * menuItemHeight;
+            int minimumHeight = SettingContainer.MinimumSize.Height;
+            int maximumHeight = minimumHeight + ((requiredHeight - minimumHeight + 9) / 10) * 10;
+            SettingContainer.MaximumSize = new Size(405, maximumHeight);
+
+            AddSettingsScreenButton("Tableau de bord", sender => OpenChildForm(() => new FormPilotage(), sender), 0);
+            AddSettingsScreenButton("Suivi des impayés", sender => OpenChildForm(() => new FormSuiviImpayes(), sender), 1);
+            AddSettingsScreenButton("Fiche unique par logement", sender => OpenChildForm(() => new FormFicheLogement(), sender), 2);
+            AddSettingsScreenButton("Recherche et filtres", sender => OpenChildForm(() => new FormRechercheHomogene(), sender), 3);
+            AddSettingsScreenButton("Encaissements plus sécurisés", sender => OpenChildForm(() => new FormEncaissementsSecurises(), sender), 4);
+            AddSettingsScreenButton("Documents plus fiables", sender => OpenChildForm(() => new FormDocumentsFiables(), sender), 5);
+            AddSettingsScreenButton("Historique des actions", sender => OpenChildForm(() => new FormHistoriqueActions(), sender), 6);
+            AddSettingsScreenButton("Sauvegarde rassurante", sender => OpenChildForm(() => new FormSauvegardeRassurante(), sender), 7);
+            AddSettingsScreenButton("Affichage plus pratique", sender => OpenChildForm(() => new FormAffichagePratique(), sender), 8);
+            AddSettingsScreenButton("Alertes utiles", sender => OpenChildForm(() => new FormAlertesUtiles(), sender), 9);
+        }
+
+        private void AddSettingsScreenButton(string text, Action<object> openScreen, int index)
+        {
+            Button screenButton = new Button
+            {
+                Name = "btnEcranAjoute" + index.ToString(CultureInfo.InvariantCulture),
+                Text = "     " + text,
+                Location = new Point(0, panel50.Bottom + btnNouveauTrimester.Bottom - panel50.Height + index * 44),
+                Size = new Size(405, 44),
+                TextAlign = ContentAlignment.MiddleLeft,
+                Padding = new Padding(28, 0, 0, 0),
+                FlatStyle = FlatStyle.Flat,
+                BackColor = Color.Teal,
+                ForeColor = Color.White,
+                Font = new Font("Segoe UI", 10F, FontStyle.Regular),
+                Cursor = Cursors.Hand,
+                UseVisualStyleBackColor = false
+            };
+            screenButton.FlatAppearance.BorderSize = 0;
+            screenButton.Click += (sender, e) => openScreen(sender);
+            SettingContainer.Controls.Add(screenButton);
+            screenButton.BringToFront();
+        }
+
         //Drag form
         [DllImport("user32.DLL", EntryPoint = "ReleaseCapture")]
         private extern static void ReleaseCapture();
@@ -105,6 +158,7 @@ namespace PKNK_CNPM
             }
 
             TForm childForm = createChildForm();
+            DisplayPreferences.ApplyTo(childForm);
             panelDesktoppanel.SuspendLayout();
             try
             {
@@ -118,16 +172,42 @@ namespace PKNK_CNPM
                 activeForm = childForm;
                 childForm.TopLevel = false;
                 childForm.FormBorderStyle = FormBorderStyle.None;
+                childForm.MinimumSize = Size.Empty;
                 childForm.Dock = DockStyle.Fill;
                 panelDesktoppanel.Controls.Add(childForm);
                 panelDesktoppanel.Tag = childForm;
                 childForm.BringToFront();
                 childForm.Show();
+                ConfigureResponsiveScrollableGroups(childForm);
                 lblTitle.Text = childForm.Text;
             }
             finally
             {
                 panelDesktoppanel.ResumeLayout(true);
+            }
+        }
+
+        private static void ConfigureResponsiveScrollableGroups(Control parent)
+        {
+            FlowLayoutPanel flowPanel = parent as FlowLayoutPanel;
+            if (flowPanel != null && flowPanel.AutoScroll && flowPanel.Controls.Count == 1 &&
+                flowPanel.Controls[0] is GroupBox && flowPanel.Parent != null && flowPanel.Parent.Controls.Count == 1)
+            {
+                GroupBox content = (GroupBox)flowPanel.Controls[0];
+                flowPanel.Dock = DockStyle.Fill;
+                EventHandler resizeContent = (sender, e) =>
+                {
+                    int width = Math.Max(1, flowPanel.ClientSize.Width - flowPanel.Padding.Horizontal - content.Margin.Horizontal);
+                    int height = Math.Max(1, flowPanel.ClientSize.Height - flowPanel.Padding.Vertical - content.Margin.Vertical);
+                    content.Size = new Size(width, height);
+                };
+                flowPanel.SizeChanged += resizeContent;
+                resizeContent(flowPanel, EventArgs.Empty);
+            }
+
+            foreach (Control child in parent.Controls)
+            {
+                ConfigureResponsiveScrollableGroups(child);
             }
         }
 
@@ -175,10 +255,9 @@ namespace PKNK_CNPM
         }
         private void btnMaximine_Click(object sender, EventArgs e)
         {
-            if (WindowState == FormWindowState.Normal)
-                this.WindowState = FormWindowState.Maximized;
-            else
-                this.WindowState = FormWindowState.Maximized;
+            WindowState = WindowState == FormWindowState.Maximized
+                ? FormWindowState.Normal
+                : FormWindowState.Maximized;
         }
         private void btnMinimize_Click_1(object sender, EventArgs e)
         {
@@ -189,31 +268,27 @@ namespace PKNK_CNPM
         {
             if (sidebarExpand)
             {
-                //if siderbar is Expand, maximine
-                sidebar.Width -= 10;
-                if (sidebar.Width == sidebar.MinimumSize.Width)
+                sidebar.Width = Math.Min(sidebar.MaximumSize.Width, sidebar.Width + 10);
+                if (sidebar.Width >= sidebar.MaximumSize.Width)
                 {
-                    sidebarExpand = false;
+                    sidebar.Width = sidebar.MaximumSize.Width;
                     sidebarTimer.Stop();
-
                 }
             }
             else
             {
-                //if siderbar is Expand, minimine
-                sidebar.Width += 10;
-                if (sidebar.Width == sidebar.MaximumSize.Width)
+                sidebar.Width = Math.Max(sidebar.MinimumSize.Width, sidebar.Width - 10);
+                if (sidebar.Width <= sidebar.MinimumSize.Width)
                 {
-                    sidebarExpand = true;
+                    sidebar.Width = sidebar.MinimumSize.Width;
                     sidebarTimer.Stop();
                 }
             }
         }
-        
 
         private void menuButton_Click_1(object sender, EventArgs e)
         {
-            //set timer interval to lowest to make it smoother 
+            sidebarExpand = !sidebarExpand;
             sidebarTimer.Start();
         }
 
@@ -237,7 +312,7 @@ namespace PKNK_CNPM
                         CustomerTimer.Stop();
                     }
                     QuanlyContainer.Height -= 20;
-                    SettingContainer.Height -= 20;
+                    CollapseSettingContainer();
                     CreditContainer.Height -= 20;
                     ReleveContainer.Height -= 20;
                     FraisContainer.Height -= 20;
@@ -274,7 +349,7 @@ namespace PKNK_CNPM
                         QuanlyTimer.Stop();
                     }
                     CustomerContainer.Height -= 20;
-                    SettingContainer.Height -= 20;
+                    CollapseSettingContainer();
                     CreditContainer.Height -= 20;
                     ReleveContainer.Height -= 20;
                     FraisContainer.Height -= 20;
@@ -303,6 +378,16 @@ namespace PKNK_CNPM
             QuanlyTimer.Start();
         }
         
+        private void CollapseSettingContainer()
+        {
+            SettingContainer.Height = Math.Max(SettingContainer.MinimumSize.Height, SettingContainer.Height - 20);
+            if (SettingContainer.Height == SettingContainer.MinimumSize.Height)
+            {
+                settingCollapse = true;
+                SettingTimer.Stop();
+            }
+        }
+
         private void SettingTimer_Tick_1(object sender, EventArgs e)
         {
             sidebar.SuspendLayout();
@@ -357,7 +442,7 @@ namespace PKNK_CNPM
                     }
                     CustomerContainer.Height -= 20;
                     QuanlyContainer.Height -= 20;
-                    SettingContainer.Height -= 20;
+                    CollapseSettingContainer();
                     CreditContainer.Height -= 20;
                     FraisContainer.Height -= 20;
                     GeranceContainer.Height -= 20;
@@ -395,7 +480,7 @@ namespace PKNK_CNPM
                     }
                     CustomerContainer.Height -= 20;
                     QuanlyContainer.Height -= 20;
-                    SettingContainer.Height -= 20;
+                    CollapseSettingContainer();
                     CreditContainer.Height -= 20;
                     ReleveContainer.Height -= 20;
                     GeranceContainer.Height -= 20;
@@ -434,7 +519,7 @@ namespace PKNK_CNPM
                     }
                     CustomerContainer.Height -= 20;
                     QuanlyContainer.Height -= 20;
-                    SettingContainer.Height -= 20;
+                    CollapseSettingContainer();
                     CreditContainer.Height -= 20;
                     ReleveContainer.Height -= 20;
                     FraisContainer.Height -= 20;
@@ -472,7 +557,7 @@ namespace PKNK_CNPM
                     }
                     CustomerContainer.Height -= 20;
                     QuanlyContainer.Height -= 20;
-                    SettingContainer.Height -= 20;
+                    CollapseSettingContainer();
                     CreditContainer.Height -= 20;
                     ReleveContainer.Height -= 20;
                     FraisContainer.Height -= 20;
@@ -509,7 +594,7 @@ namespace PKNK_CNPM
                     }
                     CustomerContainer.Height -= 20;
                     QuanlyContainer.Height -= 20;
-                    SettingContainer.Height -= 20;
+                    CollapseSettingContainer();
                     ReleveContainer.Height -= 20;
                     FraisContainer.Height -= 20;
                     GeranceContainer.Height -= 20;

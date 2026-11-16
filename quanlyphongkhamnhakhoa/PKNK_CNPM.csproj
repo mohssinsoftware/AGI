@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -258,6 +258,37 @@
     <Compile Include="Forms\frmKhachHang.Designer.cs">
       <DependentUpon>frmKhachHang.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\frmSuiviImpayes.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\frmFicheLogement.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\frmRechercheHomogene.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\frmEncaissementsSecurises.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\frmDocumentsFiables.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\frmHistoriqueActions.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\frmSauvegardeRassurante.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\frmAffichagePratique.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\frmAlertesUtiles.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\frmPilotage.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\ResponsiveScreenLayout.cs" />
     <Compile Include="frmHomeScreen.cs">
       <SubType>Form</SubType>
     </Compile>

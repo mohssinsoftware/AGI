@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.33214.272
+# Visual Studio Version 18
+VisualStudioVersion = 18.12.12328.396 insiders
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PKNK_CNPM", "quanlyphongkhamnhakhoa\PKNK_CNPM.csproj", "{8361BD63-2025-4C92-BD85-742965A2193B}"
 EndProject

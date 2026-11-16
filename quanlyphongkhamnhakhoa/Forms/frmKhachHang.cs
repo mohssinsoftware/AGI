@@ -335,6 +335,8 @@ namespace PKNK_CNPM.Forms
                         int rowsAffected = cmd.ExecuteNonQuery();
                         if (rowsAffected > 0)
                         {
+                            ActionJournal.RecordOrWarn(this, "Suppression", "Locataire", codeLoc,
+                                "Suppression du dossier locataire.");
                             MessageBox.Show("     Le locataire a été supprimé avec succès.     ");
                         }
                         else
@@ -494,6 +496,8 @@ namespace PKNK_CNPM.Forms
                         _connection.Open(); // Open the connection
                     }
                     cmd.ExecuteNonQuery();
+                    ActionJournal.RecordOrWarn(this, "Création", "Locataire", textCodeLocataire_,
+                        "Création du dossier locataire pour la gérance " + txtCodeGerance_ + ".");
                     MessageBox.Show("Locataire Bien Ajouté ");
                     Refresh();
                     LoadData();
@@ -598,6 +602,8 @@ namespace PKNK_CNPM.Forms
                     int rowsAffected = cmd.ExecuteNonQuery();
                     if (rowsAffected > 0)
                     {
+                        ActionJournal.RecordOrWarn(this, "Modification", "Locataire", textCodeLocataire_,
+                            "Mise à jour du dossier locataire.");
                         MessageBox.Show("Locataire bien modifié !");
                         LoadData();
                     }

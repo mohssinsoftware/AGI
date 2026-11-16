@@ -244,6 +244,7 @@
             this.panel4.Controls.Add(this.label7);
             this.panel4.Controls.Add(this.label1);
             this.panel4.Controls.Add(this.panel2);
+            this.panel4.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel4.Location = new System.Drawing.Point(0, 0);
             this.panel4.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
             this.panel4.Name = "panel4";

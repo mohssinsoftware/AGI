@@ -211,8 +211,8 @@
             this.sidebar.Dock = System.Windows.Forms.DockStyle.Left;
             this.sidebar.Location = new System.Drawing.Point(0, 0);
             this.sidebar.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
-            this.sidebar.MaximumSize = new System.Drawing.Size(400, 1378);
-            this.sidebar.MinimumSize = new System.Drawing.Size(93, 828);
+            this.sidebar.MaximumSize = new System.Drawing.Size(400, 0);
+            this.sidebar.MinimumSize = new System.Drawing.Size(93, 0);
             this.sidebar.Name = "sidebar";
             this.sidebar.Size = new System.Drawing.Size(400, 828);
             this.sidebar.TabIndex = 0;
@@ -1743,9 +1743,7 @@
             // 
             // panelDesktoppanel
             // 
-            this.panelDesktoppanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.panelDesktoppanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panelDesktoppanel.BackgroundImage = global::PKNK_CNPM.Properties.Resources._33847914_wwr6;
             this.panelDesktoppanel.Controls.Add(this.grpTatCa);
             this.panelDesktoppanel.Location = new System.Drawing.Point(400, 98);

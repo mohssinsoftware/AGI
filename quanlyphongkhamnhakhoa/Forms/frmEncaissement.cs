@@ -426,6 +426,8 @@ namespace PKNK_CNPM.Forms
                         int rowsAffected = cmd.ExecuteNonQuery();
                         if (rowsAffected > 0)
                         {
+                            ActionJournal.RecordOrWarn(this, "Suppression", "Encaissement", codeQuittance,
+                                "Suppression de la quittance.");
                             MessageBox.Show("Encaissement a été supprimé avec succès.");
                         }
                         else
@@ -553,6 +555,9 @@ namespace PKNK_CNPM.Forms
                         _connection.Open();
                     }
                     cmd.ExecuteNonQuery();
+                    ActionJournal.RecordOrWarn(this, "Création", "Encaissement", txtQuittance_.ToString(CultureInfo.CurrentCulture),
+                        "N° " + MAX_ID_Encaissement + "; locataire " + textCodeLocataire_ + "; gérance " + txtGerance_ +
+                        "; montant " + txtMontantLoyer_.ToString(CultureInfo.CurrentCulture));
                     MessageBox.Show("Encaissement Bien Ajouté ");
 
                     Update_PaymentLocataire(textCodeLocataire_);
@@ -779,6 +784,11 @@ namespace PKNK_CNPM.Forms
                 updateCommand.Parameters.AddWithValue("@quittance", quittance);
 
                 int rowsAffected = updateCommand.ExecuteNonQuery();
+                if (rowsAffected > 0)
+                {
+                    ActionJournal.RecordOrWarn(this, "Modification", "Encaissement", quittance,
+                        "Mise à jour de la date d'encaissement : " + formattedDate);
+                }
             }
 
             MAJtxtDateEncaissement.Text = formattedDate;
@@ -842,6 +852,9 @@ namespace PKNK_CNPM.Forms
                     int rowsAffected = cmd.ExecuteNonQuery();
                     if (rowsAffected > 0)
                     {
+                        ActionJournal.RecordOrWarn(this, "Modification", "Encaissement", MAJtxtQuitance_.ToString(CultureInfo.CurrentCulture),
+                            "Locataire " + MAJtxtCodeLocataire_ + "; gérance " + MAJtxtNomGerance_ +
+                            "; montant " + MAJtxtTotal_.ToString(CultureInfo.CurrentCulture));
                         MessageBox.Show("Encaissement bien modifié.");
                     }
                     else
@@ -2208,6 +2221,8 @@ namespace PKNK_CNPM.Forms
                         int rowsAffected = cmd.ExecuteNonQuery();
                         if (rowsAffected > 0)
                         {
+                            ActionJournal.RecordOrWarn(this, "Suppression", "Encaissement", NumEncaiss,
+                                "Suppression par numéro d'encaissement.");
                             MessageBox.Show("     Encaissement a été supprimé avec succès.     ");
                         }
                         else
